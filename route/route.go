@@ -302,7 +302,7 @@ func SimulateFullRouteWithGetDy(client *ethclient.Client, route []RouteStep, amo
 		fmt.Println("step.SwapParams", step.SwapParams)
 		fmt.Println("current", current)
 
-		i, j := step.SwapParams[0], step.SwapParams[1]
+		i, j := step.SwapParams[1], step.SwapParams[0]
 
 		var out *big.Int
 
