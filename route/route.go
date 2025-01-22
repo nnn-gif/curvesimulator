@@ -11,6 +11,8 @@ import (
 	"github.com/nnn-gif/curvesimulator/pool"
 	"github.com/nnn-gif/curvesimulator/pool2"
 	"github.com/nnn-gif/curvesimulator/pool3"
+	"github.com/nnn-gif/curvesimulator/pool4"
+	"github.com/nnn-gif/curvesimulator/pool5"
 
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
@@ -242,9 +244,30 @@ func PickBestRoute(routes []Route, amountIn float64, gasPriceGwei float64, ethPr
 	var bestRoute Route
 	var bestOut float64
 
+	// type RouteStep struct {
+	// 	PoolID            string
+	// 	SwapAddress       string
+	// 	InputCoinAddress  string
+	// 	OutputCoinAddress string
+	// 	SwapParams        [5]int
+
+	// 	PoolAddress     string
+	// 	BasePool        string
+	// 	BaseToken       string
+	// 	SecondBasePool  string
+	// 	SecondBaseToken string
+
+	// 	TVL float64
+	// }
+
 	for _, r := range routes {
+		fmt.Println("------finding route")
 		out := simulateRoute(r, amountIn)
 		outUsd := out * 1.0
+
+		if r[0].SwapAddress == "0x118629329731ce1ff01f9401212c53939f8a9eeb" || r[0].SwapAddress == "0xbd917239ec067a6af82aabb6b45dad3d09f4efd8" || r[0].SwapAddress == "0xBD917239EC067A6aF82AABb6B45DAd3d09F4EFD8" {
+			continue
+		}
 
 		steps := float64(len(r))
 		gasUsed := steps * 100000
@@ -294,7 +317,11 @@ func SimulateFullRouteWithGetDy(client *ethclient.Client, route []RouteStep, amo
 			return nil, err
 		}
 
-		poolCaller4, err := pool3.NewPool3(poolAddr, client)
+		poolCaller4, err := pool4.NewPool4(poolAddr, client)
+		if err != nil {
+			return nil, err
+		}
+		poolCaller5, err := pool5.NewPool5(poolAddr, client)
 		if err != nil {
 			return nil, err
 		}
@@ -309,15 +336,26 @@ func SimulateFullRouteWithGetDy(client *ethclient.Client, route []RouteStep, amo
 		out, err = poolCaller1.GetDy(&bind.CallOpts{}, big.NewInt(int64(i)), big.NewInt(int64(j)), current)
 		if err != nil {
 
+			fmt.Println("1")
 			out, err = poolCaller2.GetDy(&bind.CallOpts{}, big.NewInt(int64(i)), big.NewInt(int64(j)), current)
 			if err != nil {
+				fmt.Println("2")
 
 				out, err = poolCaller3.GetDy(&bind.CallOpts{}, big.NewInt(int64(i)), big.NewInt(int64(j)), current)
 				if err != nil {
+					fmt.Println("3")
 
 					out, err = poolCaller4.GetDy(&bind.CallOpts{}, big.NewInt(int64(i)), big.NewInt(int64(j)), current)
 					if err != nil {
-						return nil, err
+						fmt.Println("4")
+
+						out, err = poolCaller5.GetDy(&bind.CallOpts{}, big.NewInt(int64(i)), big.NewInt(int64(j)), current)
+						fmt.Println("4")
+
+						if err != nil {
+							return nil, err
+
+						}
 
 					}
 				}
