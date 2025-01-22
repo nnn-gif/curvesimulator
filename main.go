@@ -1,10 +1,11 @@
 package main
 
 import (
-	"curve/simulator"
 	"fmt"
 	"log"
 	"math/big"
+
+	"github.com/nnn-gif/curvesimulator/simulator"
 )
 
 func main() {

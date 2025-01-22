@@ -7,8 +7,8 @@ import (
 	"log"
 	"math/big"
 
-	"curve/curveregistry"
-	"curve/route"
+	"github.com/nnn-gif/curvesimulator/curveregistry"
+	"github.com/nnn-gif/curvesimulator/route"
 
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"

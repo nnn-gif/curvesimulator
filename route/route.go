@@ -8,9 +8,9 @@ import (
 	"strings"
 	"time"
 
-	"curve/pool"
-	"curve/pool2"
-	"curve/pool3"
+	"github.com/nnn-gif/curvesimulator/pool"
+	"github.com/nnn-gif/curvesimulator/pool2"
+	"github.com/nnn-gif/curvesimulator/pool3"
 
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"

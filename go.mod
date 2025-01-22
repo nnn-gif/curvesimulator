@@ -1,4 +1,4 @@
-module curve
+module github.com/nnn-gif/curvesimulator
 
 go 1.22.3
 
