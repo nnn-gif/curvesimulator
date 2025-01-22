@@ -78,6 +78,10 @@ func (cs *CurveSimulation) Close() {
 }
 
 func (cs *CurveSimulation) Simulate(startCoin, endCoin string, amountIn *big.Int) (*big.Int, error) {
+
+	endCoin = common.HexToAddress(endCoin).Hex()
+	startCoin = common.HexToAddress(startCoin).Hex()
+
 	allPools, err := cs.fetchPools(startCoin, endCoin)
 	if err != nil {
 		return nil, fmt.Errorf("failed to fetch pools: %w", err)
@@ -93,6 +97,18 @@ func (cs *CurveSimulation) Simulate(startCoin, endCoin string, amountIn *big.Int
 	}
 
 	graph := route.CreateRouteGraph(graphInput)
+
+	// edgesMap := graph["0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599"]
+	// if edgesMap == nil {
+	// 	fmt.Println("No edges from stETH??")
+	// } else {
+	// 	for outCoin, steps := range edgesMap {
+	// 		fmt.Printf("Edge  -> %s\n", outCoin)
+	// 		for _, s := range steps {
+	// 			fmt.Printf("  Step: poolId=%s, swapParams=%v\n", s.PoolID, s.SwapParams)
+	// 		}
+	// 	}
+	// }
 
 	routes := route.FindAllRoutes(graph, startCoin, endCoin, 2, 20)
 	if len(routes) == 0 {

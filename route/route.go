@@ -294,6 +294,11 @@ func SimulateFullRouteWithGetDy(client *ethclient.Client, route []RouteStep, amo
 			return nil, err
 		}
 
+		poolCaller4, err := pool3.NewPool3(poolAddr, client)
+		if err != nil {
+			return nil, err
+		}
+
 		fmt.Println("step.SwapParams", step.SwapParams)
 		fmt.Println("current", current)
 
@@ -303,19 +308,21 @@ func SimulateFullRouteWithGetDy(client *ethclient.Client, route []RouteStep, amo
 
 		out, err = poolCaller1.GetDy(&bind.CallOpts{}, big.NewInt(int64(i)), big.NewInt(int64(j)), current)
 		if err != nil {
-			fmt.Println("error on 1")
+
 			out, err = poolCaller2.GetDy(&bind.CallOpts{}, big.NewInt(int64(i)), big.NewInt(int64(j)), current)
 			if err != nil {
-				fmt.Println("error on 2")
 
 				out, err = poolCaller3.GetDy(&bind.CallOpts{}, big.NewInt(int64(i)), big.NewInt(int64(j)), current)
 				if err != nil {
-					fmt.Println("error on 3")
 
-					return nil, err
+					out, err = poolCaller4.GetDy(&bind.CallOpts{}, big.NewInt(int64(i)), big.NewInt(int64(j)), current)
+					if err != nil {
+						return nil, err
+
+					}
 				}
 			}
-			return nil, err
+
 		}
 		// default:
 		// 	out, err = poolCaller3.GetDy(&bind.CallOpts{}, big.NewInt(int64(i)), big.NewInt(int64(j)), current)
