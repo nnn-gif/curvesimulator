@@ -1,7 +1,6 @@
 package route
 
 import (
-	"fmt"
 	"math"
 	"math/big"
 	"sort"
@@ -161,9 +160,9 @@ func CreateRouteGraph(input RouteGraphInput) RouteGraph {
 
 	}
 
-	elapsed := time.Since(start)
-	fmt.Printf("Processed %d pools in %v, routeGraph size: %d tokens.\n",
-		len(input.AllPools), elapsed, len(routeGraph))
+	// elapsed := time.Since(start)
+	// fmt.Printf("Processed %d pools in %v, routeGraph size: %d tokens.\n",
+	// 	len(input.AllPools), elapsed, len(routeGraph))
 
 	return routeGraph
 }
@@ -261,7 +260,6 @@ func PickBestRoute(routes []Route, amountIn float64, gasPriceGwei float64, ethPr
 	// }
 
 	for _, r := range routes {
-		fmt.Println("------finding route")
 		out := simulateRoute(r, amountIn)
 		outUsd := out * 1.0
 
@@ -300,7 +298,6 @@ func SimulateFullRouteWithGetDy(client *ethclient.Client, route []RouteStep, amo
 		poolAddr := common.HexToAddress(step.SwapAddress)
 
 		// In real code, you'd do something like:
-		fmt.Println("poolAddr", poolAddr)
 
 		poolCaller1, err := pool.NewPool(poolAddr, client)
 		if err != nil {
@@ -326,9 +323,6 @@ func SimulateFullRouteWithGetDy(client *ethclient.Client, route []RouteStep, amo
 			return nil, err
 		}
 
-		fmt.Println("step.SwapParams", step.SwapParams)
-		fmt.Println("current", current)
-
 		i, j := step.SwapParams[1], step.SwapParams[0]
 
 		var out *big.Int
@@ -336,21 +330,16 @@ func SimulateFullRouteWithGetDy(client *ethclient.Client, route []RouteStep, amo
 		out, err = poolCaller1.GetDy(&bind.CallOpts{}, big.NewInt(int64(i)), big.NewInt(int64(j)), current)
 		if err != nil {
 
-			fmt.Println("1")
 			out, err = poolCaller2.GetDy(&bind.CallOpts{}, big.NewInt(int64(i)), big.NewInt(int64(j)), current)
 			if err != nil {
-				fmt.Println("2")
 
 				out, err = poolCaller3.GetDy(&bind.CallOpts{}, big.NewInt(int64(i)), big.NewInt(int64(j)), current)
 				if err != nil {
-					fmt.Println("3")
 
 					out, err = poolCaller4.GetDy(&bind.CallOpts{}, big.NewInt(int64(i)), big.NewInt(int64(j)), current)
 					if err != nil {
-						fmt.Println("4")
 
 						out, err = poolCaller5.GetDy(&bind.CallOpts{}, big.NewInt(int64(i)), big.NewInt(int64(j)), current)
-						fmt.Println("4")
 
 						if err != nil {
 							return nil, err
@@ -370,7 +359,7 @@ func SimulateFullRouteWithGetDy(client *ethclient.Client, route []RouteStep, amo
 
 		// For demonstration, we just do a mock:
 		// out := new(big.Int).Div(current, big.NewInt(2)) // pretend we always get half for demonstration
-		fmt.Printf("Step %d => pool %s => in: %s => out: %s\n", idx, step.SwapAddress, current, out)
+		// fmt.Printf("Step %d => pool %s => in: %s => out: %s\n", idx, step.SwapAddress, current, out)
 		current.Set(out)
 	}
 
