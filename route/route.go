@@ -5,7 +5,6 @@ import (
 	"math/big"
 	"sort"
 	"strings"
-	"time"
 
 	"github.com/nnn-gif/curvesimulator/pool"
 	"github.com/nnn-gif/curvesimulator/pool2"
@@ -83,7 +82,7 @@ func CreateRouteGraph(input RouteGraphInput) RouteGraph {
 	routeGraph := make(RouteGraph)
 	const GRAPH_MAX_EDGES = 3
 
-	start := time.Now()
+	// start := time.Now()
 
 	sortEdges := func(inCoin, outCoin string) {
 		edges := routeGraph[inCoin][outCoin]
@@ -294,7 +293,7 @@ func lowerCaseAll(list []string) []string {
 func SimulateFullRouteWithGetDy(client *ethclient.Client, route []RouteStep, amountIn *big.Int) (*big.Int, error) {
 	current := new(big.Int).Set(amountIn)
 
-	for idx, step := range route {
+	for _, step := range route {
 		poolAddr := common.HexToAddress(step.SwapAddress)
 
 		// In real code, you'd do something like:
